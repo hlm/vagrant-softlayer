@@ -33,7 +33,7 @@ module VagrantPlugins
           routers = @env[:sl_client]["SoftLayer_Account"].object_mask("mask[routers,routers.datacenter,routers.networkVlans,routers.networkVlans.networkSpace,routers.networkVlans.type]").getObject["routers"]
 
           routers.each do |router|
-            next if @env[:machine].provider_config.datacenter && router["datacenter"]["name"] != @env[:machine].provider_config.datacenter
+            next if @env[:machine].provider_config.datacenter && router["datacenter"] && router["datacenter"]["name"] != @env[:machine].provider_config.datacenter
             router["networkVlans"].each do |vlan|
               vlan_qualified_name = [ router["hostname"].split('.').reverse.join('.'), vlan["vlanNumber"] ].join('.')
               return vlan["id"] if vlan.has_key?("name") && vlan["type"]["keyName"] == "STANDARD" && vlan["networkSpace"] == vlan_space.to_s.upcase && (vlan["name"] == vlan_name || vlan_qualified_name == vlan_name)
